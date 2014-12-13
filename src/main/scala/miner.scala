@@ -2,7 +2,8 @@ import com.github.nscala_time.time.Imports._
 
 import scala.util.parsing.combinator.RegexParsers
 
-case class Workday(date: DateTime, log: List[String])
+case class Project(name: String, log: List[String])
+case class Workday(date: DateTime, projects: List[Project])
 
 object LogParser extends RegexParsers {
   override def skipWhitespace = false
@@ -11,9 +12,14 @@ object LogParser extends RegexParsers {
   def dateLine: Parser[DateTime] = dateRegex <~ eol ^^ {
     case dateRegex(d, m, y) => new DateTime(y.toInt, m.toInt, d.toInt, 0, 0)
   }
-  def simpleLine: Parser[String] = not(dateLine) ~> """.*""".r <~ eol
-  def workday: Parser[Workday] = dateLine ~ rep(simpleLine) ^^ {
-    case ~(date, simpleLines) => Workday(date, simpleLines)
+  val anything = """.*""".r
+  def projectLine: Parser[String] = "- " ~> anything <~ eol
+  def simpleLine: Parser[String] = not(dateLine | projectLine) ~> anything <~ eol
+  def project: Parser[Project] = projectLine ~ rep(simpleLine) ^^ {
+    case ~(name, simpleLines) => Project(name, simpleLines)
+  }
+  def workday: Parser[Workday] = dateLine ~ opt(simpleLine) ~ rep(project) ^^ {
+    case ~(~(date, lineOpt), projects) => Workday(date, projects)
   }
   def workdays: Parser[List[Workday]] = rep(workday)
 
@@ -30,7 +36,8 @@ object MinerApp extends App {
   val res: List[Workday] = LogParser(input)
   println(res.length)
   res.foreach {
-    case Workday(date, lines) =>
-      println(DateTimeFormat.forPattern("dd.MM.yyyy").print(date) + " " + lines.length)
+    case Workday(date, projects) =>
+      println(DateTimeFormat.forPattern("dd.MM.yyyy").print(date) + " " +
+        projects.map({ case Project(name, _) => name }).reduce(_ + ", " + _) )
   }
 }
