@@ -2,21 +2,18 @@ import com.github.nscala_time.time.Imports._
 
 import scala.util.parsing.combinator.RegexParsers
 
-abstract class LogLine
-case class SimpleLine(content: String) extends LogLine
-case class DateLine(date: DateTime) extends LogLine
 case class Workday(date: DateTime, log: List[String])
 
 object LogParser extends RegexParsers {
   override def skipWhitespace = false
   def eol: Parser[String] = """\r\n""".r
   val dateRegex = """([0-9]{1,2})\.([0-9]{1,2})\.(20[0-9]{1,2})""".r
-  def dateLine: Parser[DateLine] = dateRegex <~ eol ^^ {
-    case dateRegex(d, m, y) => DateLine(new DateTime(y.toInt, m.toInt, d.toInt, 0, 0) )
+  def dateLine: Parser[DateTime] = dateRegex <~ eol ^^ {
+    case dateRegex(d, m, y) => new DateTime(y.toInt, m.toInt, d.toInt, 0, 0)
   }
-  def simpleLine: Parser[SimpleLine] = not(dateLine) ~> """.*""".r <~ eol ^^ { SimpleLine(_)}
+  def simpleLine: Parser[String] = not(dateLine) ~> """.*""".r <~ eol
   def workday: Parser[Workday] = dateLine ~ rep(simpleLine) ^^ {
-    case ~(DateLine(date), simpleLines) => Workday(date, simpleLines map {case SimpleLine(sl) => sl})
+    case ~(date, simpleLines) => Workday(date, simpleLines)
   }
   def workdays: Parser[List[Workday]] = rep(workday)
 
