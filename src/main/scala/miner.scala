@@ -8,7 +8,7 @@ case class Workday(date: DateTime, projects: List[Project])
 object LogParser extends RegexParsers {
   override def skipWhitespace = false
   var lineNo: Int = 0
-  def eol: Parser[String] = { lineNo = lineNo + 1; """\r\n""".r }
+  def eol: Parser[String] = { lineNo = lineNo + 1; sys.props("line.separator") }
   val dateRegex = """([0-9]{1,2})\.([0-9]{1,2})\.(20[0-9]{1,2})""".r
   def dateLine: Parser[DateTime] = dateRegex <~ eol ^^ {
     case dateRegex(d, m, y) => new DateTime(y.toInt, m.toInt, d.toInt, 0, 0)
