@@ -19,8 +19,8 @@ object LogParser extends RegexParsers {
   def project: Parser[Project] = projectLine ~ rep(simpleLine) ^^ {
     case ~(name, simpleLines) => Project(name, simpleLines)
   }
-  def workday: Parser[Workday] = dateLine ~ opt(simpleLine) ~ rep(project) ^^ {
-    case ~(~(date, lineOpt), projects) => println(date); Workday(date, projects)
+  def workday: Parser[Workday] = dateLine ~ rep(simpleLine) ~ rep(project) ^^ {
+    case ~(~(date, _), projects) => println(date); Workday(date, projects)
   }
   def workdays: Parser[List[Workday]] = rep(workday)
 
