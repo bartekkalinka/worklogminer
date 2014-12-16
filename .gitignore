@@ -13,4 +13,4 @@ target
 *.rar
 project
 .idea
-input.txt
+*.txt
