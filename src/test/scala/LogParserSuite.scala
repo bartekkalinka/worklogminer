@@ -21,7 +21,7 @@ class LogParserSuite extends FunSuite {
       |    - aaa
       |    - bbb
       |
-    """.stripMargin
+      |""".stripMargin
 
   test("Parses days with dates") {
     println(input)
