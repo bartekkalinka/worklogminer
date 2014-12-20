@@ -10,4 +10,4 @@ libraryDependencies ++= List(
   "org.scalatest" %% "scalatest" % "2.1.6" % "test"
 )
 
-mainClass := Some("MinerApp")
+mainClass := Some("Miner")

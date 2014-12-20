@@ -24,7 +24,6 @@ class LogParserSuite extends FunSuite {
       |""".stripMargin
 
   test("Parses days with dates") {
-    println(input)
     val result = LogParser(input)
     assert(result.length == 2)
     val day1: Workday = result(0)
