@@ -9,6 +9,7 @@ object Miner extends App {
       val res: List[Workday] = LogParser(input)
       println(res.length)
       res.foreach { workday: Workday => println(workday) }
-
+    case "createDb" =>
+      DbProxy.createSchema
   }
 }
