@@ -17,6 +17,7 @@ object Miner extends App {
     case "createDb" =>
       DbProxy.createSchema
     case "import" =>
+      DbProxy.deleteAll
       parse.foreach { workday => DbProxy.add(workday.dateString) }
   }
 }

@@ -21,6 +21,16 @@ object DbProxy {
     }
   }
 
+  def deleteAll = {
+    db.withSession { implicit session =>
+      //val deleteQuery: Query[Workdays, (Int, String)] = workdays.filter(_; true)
+
+      // Perform the delete
+      //val numDeletedRows = deleteQuery.delete
+      workdays.delete
+    }
+  }
+
   def add(date: String) = {
     db.withSession { implicit session =>
       workdays +=(seq, date)
