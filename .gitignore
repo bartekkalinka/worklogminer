@@ -11,6 +11,6 @@ hs_err_pid*
 
 target
 *.rar
-project
+project/target
 .idea
 *.txt
