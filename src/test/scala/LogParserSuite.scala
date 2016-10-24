@@ -1,5 +1,6 @@
 import org.scalatest._
 import com.github.nscala_time.time.Imports._
+import pl.bka.LogParser
 
 class LogParserSuite extends FunSuite {
 

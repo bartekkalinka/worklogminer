@@ -1,4 +1,5 @@
-import com.github.nscala_time.time.Imports._
+package pl.bka
+
 import org.joda.time.DateTime
 
 import scala.util.parsing.combinator.RegexParsers

@@ -1,6 +1,4 @@
-import com.github.nscala_time.time.Imports._
-
-import scala.util.parsing.combinator.RegexParsers
+package pl.bka
 
 object Miner extends App {
   def parse: List[Workday] = {
@@ -14,10 +12,5 @@ object Miner extends App {
   args(0) match {
     case "parse" =>
       parse
-    case "createDb" =>
-      DbProxy.createSchema
-    case "import" =>
-      DbProxy.deleteAll
-      parse.foreach { workday => DbProxy.add(workday.dateString) }
   }
 }
