@@ -1,5 +1,8 @@
 package pl.bka
 
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
+
 object Miner extends App {
   def parse: List[Workday] = {
     val input: String = io.Source.fromFile("input.txt").mkString
@@ -9,8 +12,14 @@ object Miner extends App {
     res
   }
 
+  def importData(logData: List[Workday]) = {
+    Await.result(ElasticImport.importLogData(logData), Duration.Inf)
+  }
+
   args(0) match {
     case "parse" =>
       parse
+    case "import" =>
+      importData(parse)
   }
 }
