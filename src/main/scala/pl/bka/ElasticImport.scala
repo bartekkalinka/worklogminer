@@ -16,7 +16,7 @@ object ElasticImport {
   }
 
   def importLogData(logData: List[Workday]): Future[List[IndexResult]] = {
-    val client = ElasticClient.local
+    val client = ElasticClient.remote("localhost", 9300)
     client.execute { create index "log"  }
 
     Future.traverse(logData) { workday =>
