@@ -1,6 +1,6 @@
 package pl.bka
 
-import com.sksamuel.elastic4s.{ElasticClient, IndexResult}
+import com.sksamuel.elastic4s.{ElasticClient, ElasticsearchClientUri, IndexResult}
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.source.Indexable
 
@@ -16,7 +16,8 @@ object ElasticImport {
   }
 
   def importLogData(logData: List[Workday]): Future[List[IndexResult]] = {
-    val client = ElasticClient.remote("localhost", 9300)
+    val uri = ElasticsearchClientUri("elasticsearch://foo:1234,boo:9876")
+    val client = ElasticClient.transport(uri)
     client.execute { create index "log"  }
 
     Future.traverse(logData) { workday =>
