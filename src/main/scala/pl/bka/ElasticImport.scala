@@ -16,7 +16,7 @@ object ElasticImport {
   }
 
   def importLogData(logData: List[Workday]): Future[List[IndexResult]] = {
-    val uri = ElasticsearchClientUri("elasticsearch://foo:1234,boo:9876")
+    val uri = ElasticsearchClientUri("elasticsearch://localhost:9300")
     val client = ElasticClient.transport(uri)
     client.execute { create index "log"  }
 
