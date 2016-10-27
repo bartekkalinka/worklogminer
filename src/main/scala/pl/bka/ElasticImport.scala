@@ -12,7 +12,7 @@ object ElasticImport {
   // TODO use spray json
   implicit object WorkdayIndexable extends Indexable[Workday] {
     override def json(t: Workday): String =
-      s""" { "date" : "${t.date}", "projects" : "[ ${t.projects.map(_.toJson).reduce(_ + ", " + _)} ]" } """
+      s""" { "date" : "${t.date}", "projects" : [ ${t.projects.map(_.toJson).reduce(_ + ", " + _)} ] } """
   }
 
   def importLogData(logData: List[Workday]): Future[List[IndexResult]] = {
