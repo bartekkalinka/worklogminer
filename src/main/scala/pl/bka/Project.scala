@@ -5,6 +5,7 @@ case class Project(name: String, log: List[String]) {
 
   def toJson: String = {
     def jsonLine(line: String) = s"""{ "line": "$line" }"""
-    s"""{ "name" : "$name", "log": [ ${log.map(jsonLine).reduce(_ + ", " + _)} ] } """
+    val linesJsonArr = if(log.isEmpty) "" else log.map(jsonLine).reduce(_ + ", " + _)
+    s"""{ "name" : "$name", "log": [ $linesJsonArr ] } """
   }
 }
