@@ -12,8 +12,8 @@ object Miner extends App {
     res
   }
 
-  def importData(logData: List[Workday]) = {
-    Await.result(ElasticImport.importLogData(logData), Duration.Inf)
+  def importData(elasticDao: ElasticDao, logData: List[Workday]) = {
+    Await.result(elasticDao.importLogData(logData), Duration.Inf)
   }
 
   args(0) match {
@@ -21,6 +21,10 @@ object Miner extends App {
       parse(None)
     case "import" =>
       val fileName = if(args.length >= 2) Some(args(1)) else None
-      importData(parse(fileName))
+      val elasticDao = new ElasticDao
+      importData(elasticDao, parse(fileName))
+    case "clear" =>
+      val elasticDao = new ElasticDao
+      elasticDao.clearLogData()
   }
 }
