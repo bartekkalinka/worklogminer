@@ -3,18 +3,15 @@ package pl.bka
 import com.sksamuel.elastic4s.{ElasticClient, ElasticsearchClientUri, IndexResult}
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.source.Indexable
+import spray.json._
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-object ElasticImport {
+object ElasticImport extends JsonProtocol {
 
-  // TODO use spray json
   implicit object WorkdayIndexable extends Indexable[Workday] {
-    override def json(t: Workday): String = {
-      val projectsJsonArr = t.projects.map(_.toJson).reduce(_ + ", " + _)
-      s""" { "date" : "${t.date}", "projects" : [ $projectsJsonArr ] } """
-    }
+    override def json(t: Workday): String = t.toJson.toString
   }
 
   def importLogData(logData: List[Workday]): Future[List[IndexResult]] = {
@@ -23,7 +20,6 @@ object ElasticImport {
     client.execute { create index "log"  }
 
     Future.traverse(logData) { workday =>
-      println(s"workday ${WorkdayIndexable.json(workday)}")
       client.execute {
         index into "log" / "workdays" source workday
       }
