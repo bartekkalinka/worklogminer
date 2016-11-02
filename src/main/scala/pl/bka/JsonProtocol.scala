@@ -1,12 +1,11 @@
 package pl.bka
 
 import com.github.nscala_time.time.Imports._
-import org.joda.time.format.ISODateTimeFormat
-import spray.json.{JsString, _}
+import spray.json._
 
 trait JsonProtocol extends DefaultJsonProtocol {
-  implicit object DateTimeFormat extends RootJsonFormat[DateTime] {
-    val formatter = ISODateTimeFormat.basicDateTimeNoMillis
+  implicit object MyDateTimeFormat extends RootJsonFormat[DateTime] {
+    val formatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZZ")
     def write(obj: DateTime): JsValue = JsString(formatter.print(obj))
     def read(json: JsValue): DateTime = json match {
       case JsString(s) => formatter.parseDateTime(s)

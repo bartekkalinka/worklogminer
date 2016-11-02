@@ -20,6 +20,7 @@ class ElasticDao extends JsonProtocol {
     client.execute { create index "log"  }
 
     Future.traverse(logData) { workday =>
+      //println(s"workday ${WorkdayIndexable.json(workday)}")
       client.execute {
         index into "log" / "workdays" source workday
       }
