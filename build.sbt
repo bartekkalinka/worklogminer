@@ -9,5 +9,6 @@ libraryDependencies ++= List(
   "com.github.nscala-time" %% "nscala-time" % "2.14.0",
   "com.sksamuel.elastic4s" %% "elastic4s-core" % "2.3.0",
   "io.spray" %%  "spray-json" % "1.3.2",
+  "org.slf4j" % "slf4j-simple" % "1.7.21",
   "org.scalatest" %% "scalatest" % "3.0.0" % "test"
 )
