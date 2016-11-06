@@ -2,6 +2,7 @@ package pl.bka
 
 import com.github.nscala_time.time.Imports._
 import org.scalatest._
+import pl.bka.model.parse.Workday
 
 class LogParserSuite extends FunSuite {
 

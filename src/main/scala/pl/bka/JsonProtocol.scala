@@ -2,6 +2,7 @@ package pl.bka
 
 import com.github.nscala_time.time.Imports._
 import org.joda.time.format.ISODateTimeFormat
+import pl.bka.model.db.ProjectDay
 import spray.json._
 
 trait JsonProtocol extends DefaultJsonProtocol {
@@ -14,7 +15,6 @@ trait JsonProtocol extends DefaultJsonProtocol {
     }
   }
 
-  implicit val projectFormat = jsonFormat2(Project.apply)
-  implicit val workdayFormat = jsonFormat2(Workday.apply)
+  implicit val projectDayFormat = jsonFormat3(ProjectDay.apply)
 }
 

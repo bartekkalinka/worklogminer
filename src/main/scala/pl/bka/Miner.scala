@@ -1,5 +1,8 @@
 package pl.bka
 
+import pl.bka.model.db.ProjectDay
+import pl.bka.model.parse.Workday
+
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
@@ -13,7 +16,8 @@ object Miner extends App {
   }
 
   def importData(elasticDao: ElasticDao, logData: List[Workday]) = {
-    Await.result(elasticDao.importLogData(logData), Duration.Inf)
+    val dbData: Seq[ProjectDay] = logData.flatMap(_.toProjectDays)
+    Await.result(elasticDao.importData(dbData), Duration.Inf)
   }
 
   args(0) match {

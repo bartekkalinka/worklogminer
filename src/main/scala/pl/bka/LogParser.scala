@@ -1,6 +1,7 @@
 package pl.bka
 
 import org.joda.time.DateTime
+import pl.bka.model.parse.{Project, Workday}
 
 import scala.util.parsing.combinator.RegexParsers
 
