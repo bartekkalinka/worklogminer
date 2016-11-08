@@ -17,7 +17,7 @@ object Miner extends App {
 
   def importData(elasticDao: ElasticDao, logData: List[Workday]) = {
     val dbData: Seq[ProjectDay] = logData.flatMap(_.toProjectDays)
-    Await.result(elasticDao.importData(dbData), Duration.Inf)
+    elasticDao.importData(dbData)
   }
 
   args(0) match {

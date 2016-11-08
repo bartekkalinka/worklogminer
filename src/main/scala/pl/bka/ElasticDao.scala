@@ -6,8 +6,8 @@ import com.sksamuel.elastic4s.source.Indexable
 import pl.bka.model.db.ProjectDay
 import spray.json._
 
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.Duration
+import scala.concurrent.Await
 
 class ElasticDao extends JsonProtocol {
   val uri = ElasticsearchClientUri("elasticsearch://localhost:9300")
@@ -17,14 +17,14 @@ class ElasticDao extends JsonProtocol {
     override def json(t: ProjectDay): String = t.toJson.toString
   }
 
-  def importData(dbData: Seq[ProjectDay]): Future[Seq[IndexResult]] = {
-    client.execute { create index "log"  }
+  def importData(dbData: Seq[ProjectDay]): Seq[IndexResult] = {
+    Await.result(client.execute { create index "log"  }, Duration.Inf)
 
-    Future.traverse(dbData) { projectDay =>
+    dbData.map { projectDay =>
       //println(s"projectday ${ProjectDayIndexable.json(projectDay)}")
-      client.execute {
+      Await.result(client.execute {
         index into "log" / "days" source projectDay
-      }
+      }, Duration.Inf)
     }
   }
 
