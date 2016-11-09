@@ -16,7 +16,7 @@ object Miner extends App {
   }
 
   def importData(elasticDao: ElasticDao, logData: List[Workday]) = {
-    val dbData: Seq[ProjectDay] = logData.flatMap(_.toProjectDays)
+    val dbData: List[ProjectDay] = logData.flatMap(_.toProjectDays)
     elasticDao.importData(dbData)
   }
 
@@ -29,6 +29,6 @@ object Miner extends App {
       importData(elasticDao, parse(fileName))
     case "clear" =>
       val elasticDao = new ElasticDao
-      elasticDao.clearLogData()
+      Await.result(elasticDao.clearLogData(), Duration.Inf)
   }
 }
