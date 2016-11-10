@@ -26,7 +26,6 @@ class ElasticDao extends JsonProtocol {
     val source = Source[ProjectDay](dbData)
 
     implicit val builder = new RequestBuilder[ProjectDay] {
-      import com.sksamuel.elastic4s.ElasticDsl._
       def request(projectDay: ProjectDay): BulkCompatibleDefinition =  index into "log" / "days" source projectDay
     }
     val completionFn: () => Unit = { () => system.terminate() }
