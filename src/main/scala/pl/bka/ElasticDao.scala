@@ -29,7 +29,8 @@ class ElasticDao extends JsonProtocol {
       import com.sksamuel.elastic4s.ElasticDsl._
       def request(projectDay: ProjectDay): BulkCompatibleDefinition =  index into "log" / "days" source projectDay
     }
-    val subscriber = client.subscriber[ProjectDay](batchSize = 100, concurrentRequests = 1)
+    val completionFn: () => Unit = { () => system.terminate() }
+    val subscriber = client.subscriber[ProjectDay](batchSize = 100, concurrentRequests = 1, completionFn = completionFn)
     val sink = Sink.fromSubscriber(subscriber)
 
     source.to(sink).run()
