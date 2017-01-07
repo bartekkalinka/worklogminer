@@ -1,15 +1,12 @@
 package pl.bka
 
-import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
-import akka.stream.scaladsl.{Sink, Source}
-import com.sksamuel.elastic4s.{BulkCompatibleDefinition, ElasticClient, ElasticsearchClientUri, IndexResult}
+import com.sksamuel.elastic4s._
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.source.Indexable
 import pl.bka.model.db.ProjectDay
 import spray.json._
-import com.sksamuel.elastic4s.streams.ReactiveElastic._
-import com.sksamuel.elastic4s.streams.RequestBuilder
+
+import scala.concurrent.Future
 
 class ElasticDao extends JsonProtocol {
   val uri = ElasticsearchClientUri("elasticsearch://localhost:9300")
@@ -19,20 +16,12 @@ class ElasticDao extends JsonProtocol {
     override def json(t: ProjectDay): String = t.toJson.toString
   }
 
-  def importData(dbData: List[ProjectDay]) = {
-    implicit val system = ActorSystem()
-    implicit val materializer = ActorMaterializer()
+  def importData(dbData: Seq[ProjectDay]): Future[BulkResult] = {
+    client.execute { create index "log"  }
 
-    val source = Source[ProjectDay](dbData)
-
-    implicit val builder = new RequestBuilder[ProjectDay] {
-      def request(projectDay: ProjectDay): BulkCompatibleDefinition =  index into "log" / "days" source projectDay
+    client.execute {
+      bulk(dbData.map(index into "log" / "days" source _))
     }
-    val completionFn: () => Unit = { () => system.terminate() }
-    val subscriber = client.subscriber[ProjectDay](batchSize = 100, concurrentRequests = 1, completionFn = completionFn)
-    val sink = Sink.fromSubscriber(subscriber)
-
-    source.to(sink).run()
   }
 
   def clearLogData() = {
